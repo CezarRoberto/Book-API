@@ -24,4 +24,8 @@ export class BookEntity extends BaseEntity {
     @Column({ default: false})
     @Field(() => Boolean)
     isPublished: boolean
+
+    @Field(() => Date)
+    @Column()
+    year: Date
 }
