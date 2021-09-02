@@ -8,7 +8,15 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-co
 async function main() {
    await createConnection()
   const schema = await buildSchema({
-      resolvers: [BookResolver]
+      resolvers: [BookResolver],
+      authChecker: ({ context: {req} }) => {
+      
+        if(req.User.userById) {
+          return true
+        }
+
+        return false; 
+      }
   })
   const server = new ApolloServer({ schema, plugins:[
     ApolloServerPluginLandingPageGraphQLPlayground()
