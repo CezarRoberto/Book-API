@@ -4,21 +4,17 @@ import { ApolloServer } from "apollo-server";
 import { buildSchema } from "type-graphql";
 import { BookResolver } from "./resolvers/BookResolver";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import { UserResolver } from "./resolvers/UserResolver";
 
 async function main() {
-   await createConnection()
+    
+  await createConnection()
   const schema = await buildSchema({
-      resolvers: [BookResolver],
-      authChecker: ({ context: {req} }) => {
-      
-        if(req.User.userById) {
-          return true
-        }
+      resolvers: [BookResolver,  UserResolver]})
 
-        return false; 
-      }
-  })
-  const server = new ApolloServer({ schema, plugins:[
+  
+  
+  const server = new ApolloServer({ schema, context: ({req, res}) => ({req, res}), plugins:[
     ApolloServerPluginLandingPageGraphQLPlayground()
   ] })
   await server.listen(4000)

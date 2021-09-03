@@ -30,7 +30,6 @@ export class User extends BaseEntity {
 
     
     @Column()
-    @Field(() => String)
     password: string
 
 }
