@@ -1,10 +1,12 @@
 import { compare, hash } from "bcryptjs";
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { createAccessToken, createRefreshToken } from "../Auth/auth";
 import { isAuth } from "../Auth/isAuth";
 import { UpdateUserInput } from "../inputs/UpdateUserInput";
 import { User } from "../models/UserEntity";
 import { MyContext } from "../Auth/MyContext";
+import { sendRefreshToken } from "../Auth/sendRefreshToken";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 class LoginResponse {
@@ -83,11 +85,7 @@ export class UserResolver {
             throw new Error("Email or Password wrong")
         }
 
-        res.cookie('jid', createRefreshToken(user),
-            {
-                httpOnly: true
-            }
-        );
+        sendRefreshToken(res, createRefreshToken(user))
 
         return {
             accessToken: createAccessToken(user)
@@ -95,6 +93,14 @@ export class UserResolver {
 
     }
 
+    @Mutation(() => Boolean)
+    async revokeRefreshTokensForUser(@Arg("userId", () => Int) userId: number) {
+        await getConnection()
+        .getRepository(User).
+        increment( { id: userId} ,"tokenVersion", 1);
+
+        return true;
+    } 
 
 
     @Mutation(() => User)

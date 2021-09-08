@@ -6,7 +6,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     @Field(() => ID)
-    id: string
+    id: number
 
     @Column()
     @Field(() => String)
@@ -31,5 +31,9 @@ export class User extends BaseEntity {
     
     @Column()
     password: string
-
+    
+    @Column("int", {
+        default: 0
+    })
+    tokenVersion: number;
 }

@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Arg } from "type-graphql";
+import { Resolver, Query, Mutation,  Arg } from "type-graphql";
 import { CreateBookInput } from "../inputs/CreateBookInput";
 import { UpdateBookInput } from "../inputs/UpdateBookInput";
 import { BookEntity } from "../models/BookEntity";
@@ -17,6 +17,7 @@ export class BookResolver {
     const book = BookEntity.findOne({ where : {id}})
     return book
   }
+
 
 
   @Mutation(() => BookEntity)
